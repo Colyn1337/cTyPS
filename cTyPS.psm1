@@ -1,6 +1,6 @@
-using module ./cTyEnums.psm1 
-using module ./cTyClasses.psm1
-using module ./cTyTables.psm1
+using module ./bin/cTyEnums.psm1 
+using module ./bin/cTyClasses.psm1
+using module ./bin/cTyTables.psm1
 
 function New-cTy{
     Param(
