@@ -22,7 +22,11 @@ function Get-cTy{
         [string] $Name
     )
 
-    $cTy = [region]::CityList | where name -eq $Name
+    if($Name){
+        $cTy = [region]::CityList | where name -eq $Name
+    }else{
+        $cTy = [region]::CityList
+    }
 
     if(-not $cTy){
         Write-Error "No cTy found with the name: $Name" -EA Stop
