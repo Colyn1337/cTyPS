@@ -1,2 +1,2 @@
 # cTyPS
-A text based city builder written in PoSh for PoSh
+A {prototype} text based city builder written in PoSh for PoSh
