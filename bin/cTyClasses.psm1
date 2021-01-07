@@ -15,11 +15,24 @@ class Building : cTyPS {
     [BuildingType] $Type
     [int]          $Level
     [string]       $Description
+    [int]          $Cost
+
+    Building([string]$Name){
+        if([cTyPS]::BuildingDict.$Name){
+            $this.Name = $Name
+            $this.Cost = [cTyPS]::BuildingDict.$Name.BaseCost
+            $this.Description = [cTyPS]::BuildingDict.$Name.Desc
+            $this.Type = [cTyPS]::BuildingDict.$Name.Type
+        }else{
+            throw "Building with the name $name does not exist in dictionary."
+        }
+    }
 
     Building([string]$Name,[int]$Level){
         if([cTyPS]::BuildingDict.$Name){
             $this.Name  = $Name
             $this.Level = $Level
+            $this.Cost = [cTyPS]::BuildingDict.$Name.BaseCost
             $this.Description = [cTyPS]::BuildingDict.$Name.Desc
             $this.Type = [cTyPS]::BuildingDict.$Name.Type
         }else{
@@ -74,5 +87,19 @@ Class Economics : cTyPS{
 
     static [int] CalculateTax( [string]$Class,[int]$Population ){
         return $Population * [Economics]::Taxes.$Class
+    }
+}
+
+Class cTyBuildingNames : System.Management.Automation.IValidateSetValuesGenerator {
+    [String[]] GetValidValues() {
+        $BuildingNames = [cTyPS]::BuildingDict.Keys
+        return [String[]] $BuildingNames
+    }
+}
+
+Class cTyCities : System.Management.Automation.IValidateSetValuesGenerator {
+    [String[]] GetValidValues() {
+        $cTyNames = [region]::CityList.Name
+        return [String[]] $cTyNames
     }
 }

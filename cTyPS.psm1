@@ -1,3 +1,4 @@
+using namespace System.Collections
 using module ./bin/cTyEnums.psm1 
 using module ./bin/cTyClasses.psm1
 using module ./bin/cTyTables.psm1
@@ -14,11 +15,12 @@ function New-cTy{
     [region]::CityList += 
         [City]::new($Difficulty,$Name,$Year)
 
-    [region]::CityList | where name -eq $Name
+    Show-Cty $Name
 }
 
-function Get-cTy{
+function Get-cTyObject{
     Param(
+        [validateset([cTyCities])]
         [string] $Name
     )
 
@@ -38,23 +40,55 @@ function Get-cTy{
 function Show-Cty{
     Param(
         [parameter(mandatory=$true)]
-        #[ValidateSet({[region]::CityList.Name})]
+        [ValidateSet([cTyCities])]
         [string]$Name
     )
 
-    $cTy = Get-cTy $Name
+    $cTy = Get-cTyObject $Name
 
     'cTy DETAILS:'
-    $cTy | select * -ExcludeProperty Buildings | ft 
+    $cTy | select -ExcludeProperty Buildings | ft 
 
     "BUILDING LIST:"
-    $cTy.Buildings | ft 
+    $cTy.Buildings | 
+        select -ExcludeProperty Cost | 
+        select Name,Description,Level,Type
+        ft -AutoSize
+}
+
+function Get-cTyBuildingList{
+    Param()
+
+    [ArrayList]$BuildingList = @()
+    foreach($item in [cTyPS]::BuildingDict.Keys){
+        $null = $BuildingList.Add([building]::new($item))
+    }
+
+    $BuildingList | 
+        select -ExcludeProperty Level |
+        select Name,Description,Cost,Type
+        ft -AutoSize
 }
 
 Function New-cTyBuilding{
     [cmdletbinding()]
     Param (
-        [ValidateSet({$Global:ctyBuildingDictionary.Keys})]
-        [string]$Name
+        [validateset([cTyCities])]
+        [string]$cTy,
+
+        [ValidateSet([cTyBuildingNames])]
+        [string]$Building
     )
+
+    $cTyObj = Get-cTyObject $cTy
+    $cTyBuilding = [cTyPS]::BuildingDict.$Building
+
+    if($cTyObj.Cash -ge $cTyBuilding.BaseCost){
+        $cTyObj.NewBuild($Building, 1)
+        $ctyObj.Cash = $cTyObj.Cash - [int]$cTyBuilding.BaseCost
+    }else{
+        Write-Error "Not enough dough in $cTy coffers to build $Building!"
+    }
+
+    return $true
 }
