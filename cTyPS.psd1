@@ -30,7 +30,7 @@ Author = 'Colyn Via'
 Copyright = '(c) Colyn Via. All rights reserved.'
 
 # Description of the functionality provided by this module
-Description = 'A text based city builder written in PoSh for PoSh'
+Description = 'A text based city builder written for PoSh in PoSh'
 
 # Minimum version of the PowerShell engine required by this module
 PowerShellVersion = '7.1'

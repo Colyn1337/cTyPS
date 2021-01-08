@@ -92,3 +92,22 @@ Function New-cTyBuilding{
 
     return $true
 }
+
+Function Next-cTyTurn {
+    Param(
+        [parameter(Mandatory=$true)]
+        [validateset([cTyCities])]
+        [string]$Name,
+
+        [validaterange(1,12)]
+        [int]$Count = 1
+    )
+
+    $cTyObj = Get-cTyObject $Name
+
+    for($x=1;$x -le $count;$x++){
+        $null = $cTyObj.NextTurn()
+    }
+
+    Show-Cty $Name
+}
