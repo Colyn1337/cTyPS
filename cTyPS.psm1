@@ -9,8 +9,14 @@ function New-cTy{
         [ValidateNotNullOrEmpty()]
         [string] $Name,
         [Difficulty] $Difficulty = 'Medium',
-        [int] $Year = 2020
+        [int] $Year = [datetime]::Now.Year
     )
+
+    if([Region]::CityList.Name -contains $Name){
+        $string = "A cTy already exists with the name $Name. " + `
+        "Use Show-cTy instead."
+        Write-Error $string -EA Stop
+    }
 
     [region]::CityList += 
         [City]::new($Difficulty,$Name,$Year)
@@ -39,9 +45,8 @@ function Get-cTyObject{
 
 function Show-Cty{
     Param(
-        [parameter(mandatory=$true)]
         [ValidateSet([cTyCities])]
-        [string]$Name
+        [string]$Name = [region]::CityList[0].Name
     )
 
     $cTy = Get-cTyObject $Name
@@ -95,19 +100,17 @@ Function New-cTyBuilding{
 
 Function Next-cTyTurn {
     Param(
-        [parameter(Mandatory=$true)]
         [validateset([cTyCities])]
-        [string]$Name,
+        [string[]]$Name = [region]::CityList[0].Name,
 
         [validaterange(1,12)]
         [int]$Count = 1
     )
 
-    $cTyObj = Get-cTyObject $Name
-
-    for($x=1;$x -le $count;$x++){
-        $null = $cTyObj.NextTurn()
+    foreach($cTy in $Name){
+        $cTyObj = Get-cTyObject $cTy
+        for($x=1;$x -le $count;$x++){
+            $null = $cTyObj.NextTurn()
+        }
     }
-
-    Show-Cty $Name
 }
