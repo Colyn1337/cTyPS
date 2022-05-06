@@ -6,6 +6,12 @@ Enum Difficulty{
     Hard    = 75
 }
 
+Enum BuildingClass{
+    District
+    Building
+    Monument
+}
+
 Enum BuildingType{
     Residential
     Commercial

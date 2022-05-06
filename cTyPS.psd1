@@ -12,7 +12,7 @@
 RootModule = 'cTyPS.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.1'
+ModuleVersion = '0.15.1'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -51,7 +51,7 @@ PowerShellHostVersion = '7.1'
 # ProcessorArchitecture = ''
 
 # Modules that must be imported into the global environment prior to importing this module
-RequiredModules = @('./bin/cTyEnums.psm1' , './bin/cTyClasses.psm1', './bin/cTyTables.psm1')
+#RequiredModules = @('./bin/cTyEnums.psm1' , './bin/cTyClasses.psm1', './bin/cTyTables.psm1')
 
 # Assemblies that must be loaded prior to importing this module
 RequiredAssemblies = 'System.Collections.dll'
