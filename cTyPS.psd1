@@ -12,7 +12,7 @@
 RootModule = 'cTyPS.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.16.145'
+ModuleVersion = '0.17.145'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
