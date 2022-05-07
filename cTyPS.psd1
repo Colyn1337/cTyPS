@@ -12,7 +12,7 @@
 RootModule = 'cTyPS.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.15.1'
+ModuleVersion = '0.16.145'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -21,7 +21,7 @@ ModuleVersion = '0.15.1'
 GUID = 'ef6116e1-2e99-4eff-8ed4-8a83a5170bb7'
 
 # Author of this module
-Author = 'Colyn Via'
+Author = 'Colyn Via colyn.via@protonmail.com'
 
 # Company or vendor of this module
 #CompanyName = ''
