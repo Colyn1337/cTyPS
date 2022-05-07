@@ -35,6 +35,7 @@ using module ./cTyClasses.psm1
     }
     'Founders Statue' = @{
         Class    = [BuildingClass]::Monument
+        Type     = [BuildingType]::Civic
         Desc     = 'A monument to commemorate the founding of the city.'
         BaseCost = 0
     }

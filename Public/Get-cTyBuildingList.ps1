@@ -1,13 +1,22 @@
 function Get-cTyBuildingList{
-    Param()
+  Param(
+    [BuildingType]$Type
+  )
 
-    [ArrayList]$BuildingList = @()
-    foreach($item in [cTyPS]::BuildingDict.Keys){
-        $null = $BuildingList.Add([building]::new($item))
+  [ArrayList]$ReturnList = @()
+
+  $BuildingList = [cTyPS]::BuildingDict
+
+  foreach($item in $BuildingList.Keys){
+    if($Type -and $BuildingList[$item].Type -eq $Type){
+      $null = $ReturnList.Add([building]::new($item))
+    }elseif(! $Type){
+      $null = $ReturnList.Add([building]::new($item))
     }
+  }
 
-    $BuildingList | 
-        select -ExcludeProperty Level |
-        select Name,Description,Cost,Type
-        ft -AutoSize
+  $ReturnList | 
+    select -ExcludeProperty Level |
+    select Name,Description,Cost,Type
+    ft -AutoSize
 }
