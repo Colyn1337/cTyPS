@@ -13,7 +13,7 @@ Function New-cTyBuilding{
   .NOTES
     Author:    Colyn Via
     Contact:   colyn.via@protonmail.com
-    Version:   1.0
+    Version:   1.0.0
     Date:      11.22.2022
 #>
     [cmdletbinding()]

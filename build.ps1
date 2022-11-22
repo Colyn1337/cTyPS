@@ -1,10 +1,29 @@
 <#
   .SYNOPSIS
     A universal build script for pwsh and Powershell projects.
+
   .DESCRIPTION
     Compiles individual code files into a module file for
     distribution. Loads files and orders them based on named
     purpose (e.g. enum, class, private, public).
+
+  .EXAMPLE
+    Build a module project for distribution.
+
+    ./build.ps1
+
+  .EXAMPLE
+    Build a developer version of the module project for testing
+
+    ./build.ps1 -DevBuild
+
+  .NOTES
+
+    Author:     Colyn Via
+    Contact:    colyn.via@protonmail.com
+    Date:       11.22.2022
+    Version     1.0.0
+    
 #>
 using namespace System.Collections
 Param(
@@ -83,7 +102,7 @@ if($DevBuild){
 $null = New-Item @splNewItem
 
 $HelpFilePath = "$Location\en-US\about_" + $ModuleName + ".help.txt"
-[string]$HelpContent = Get-Content $Location\en-US\about_cTyPS.help.txt -Raw
+[string]$HelpContent = Get-Content $HelpFilePath -Raw
 $splNewItem = @{
     Path = $Location
     ItemType = 'File'
