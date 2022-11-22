@@ -58,3 +58,13 @@ $splNewItem = @{
     Value = $content
 }
 New-Item @splNewItem
+
+[string]$HelpContent = Get-Content $Location\en-US\about_cTyPS.help.txt -Raw
+$splNewItem = @{
+    Path = $Location
+    ItemType = File
+    Name = 'README.md'
+    Force = $True
+    Value = $HelpContent
+}
+New-Item @splNewItem
