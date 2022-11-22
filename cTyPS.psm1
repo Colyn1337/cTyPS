@@ -32,135 +32,6 @@ public enum BuildingName
 }
 "@
 #>
-function Get-cTy{
-    Param(
-        [ValidateSet([cTyCities])]
-        [string]$Name = [region]::CityList[0].Name
-    )
-
-    $cTy = Get-cTyObject $Name
-
-    'cTy DETAILS:'
-    $cTy | select -ExcludeProperty Buildings | ft 
-
-    "BUILDING LIST:"
-    $cTy.Buildings | 
-        select -ExcludeProperty Cost | 
-        select Name,Description,Level,Type
-        ft -AutoSize
-} function Get-cTyBuildingList{
-  Param(
-    [BuildingType]$Type
-  )
-
-  [ArrayList]$ReturnList = @()
-
-  $BuildingList = [cTyPS]::BuildingDict
-
-  foreach($item in $BuildingList.Keys){
-    if($Type -and $BuildingList[$item].Type -eq $Type){
-      $null = $ReturnList.Add([building]::new($item))
-    }elseif(! $Type){
-      $null = $ReturnList.Add([building]::new($item))
-    }
-  }
-
-  $ReturnList | 
-    select -ExcludeProperty Level |
-    select Name,Description,Cost,Type
-    ft -AutoSize
-} function New-cTy{
-    Param(
-        [parameter(Mandatory=$true)]
-        [ValidateNotNullOrEmpty()]
-        [string] $Name,
-        [Difficulty] $Difficulty = 'Medium',
-        [int] $Year = [datetime]::Now.Year
-    )
-
-    if([Region]::CityList.Name -contains $Name){
-        $string = "A cTy already exists with the name $Name. " + `
-        "Use Show-cTy instead."
-        Write-Error $string -EA Stop
-    }
-
-    [region]::CityList += 
-        [City]::new($Difficulty,$Name,$Year)
-
-    Show-Cty $Name
-}
- Function New-cTyBuilding{
-    [cmdletbinding()]
-    Param (
-        [validateset([cTyCities])]
-        [string]$cTy,
-
-        [ValidateSet([cTyBuildingNames])]
-        [string]$Building
-    )
-
-    $cTyObj = Get-cTyObject $cTy
-    $cTyBuilding = [cTyPS]::BuildingDict.$Building
-
-    if($cTyObj.Cash -ge $cTyBuilding.BaseCost){
-        $cTyObj.NewBuild($Building, 1)
-        $ctyObj.Cash = $cTyObj.Cash - [int]$cTyBuilding.BaseCost
-    }else{
-        Write-Error "Not enough dough in $cTy coffers to build $Building!"
-    }
-
-    return $true
-}
- Function Next-cTyTurn {
-    Param(
-        [validateset([cTyCities])]
-        [string[]]$Name = [region]::CityList[0].Name,
-
-        [validaterange(1,12)]
-        [int]$Count = 1
-    )
-
-    foreach($cTy in $Name){
-        $cTyObj = Get-cTyObject $cTy
-        for($x=1;$x -le $count;$x++){
-            $null = $cTyObj.NextTurn()
-        }
-    }
-} function Show-Cty{
-    Param(
-        [ValidateSet([cTyCities])]
-        [string]$Name = [region]::CityList[0].Name
-    )
-
-    $cTy = Get-cTyObject $Name
-
-    'cTy DETAILS:'
-    $cTy | select -ExcludeProperty Buildings | ft 
-
-    "BUILDING LIST:"
-    $cTy.Buildings | 
-        select -ExcludeProperty Cost | 
-        select Name,Description,Level,Type
-        ft -AutoSize
-}
-function Get-cTyObject{
-    Param(
-        [validateset([cTyCities])]
-        [string] $Name
-    )
-
-    if($Name){
-        $cTy = [region]::CityList | where name -eq $Name
-    }else{
-        $cTy = [region]::CityList
-    }
-
-    if(-not $cTy){
-        Write-Error "No cTy found with the name: $Name" -EA Stop
-    }
-
-    $cTy
-}
 #using module ./cTyEnums.ps1
 #using module ./cTyTables.ps1 Don't uncomment or it will cause a load loop: 'module nesting limit'
 
@@ -321,6 +192,135 @@ Class cTyCities : System.Management.Automation.IValidateSetValuesGenerator {
         BaseCost = 25000
         BaseEmp  = 0
     }
+}
+function Get-cTyObject{
+    Param(
+        [validateset([cTyCities])]
+        [string] $Name
+    )
+
+    if($Name){
+        $cTy = [region]::CityList | where name -eq $Name
+    }else{
+        $cTy = [region]::CityList
+    }
+
+    if(-not $cTy){
+        Write-Error "No cTy found with the name: $Name" -EA Stop
+    }
+
+    $cTy
+}
+function Get-cTy{
+    Param(
+        [ValidateSet([cTyCities])]
+        [string]$Name = [region]::CityList[0].Name
+    )
+
+    $cTy = Get-cTyObject $Name
+
+    'cTy DETAILS:'
+    $cTy | select -ExcludeProperty Buildings | ft 
+
+    "BUILDING LIST:"
+    $cTy.Buildings | 
+        select -ExcludeProperty Cost | 
+        select Name,Description,Level,Type
+        ft -AutoSize
+} function Get-cTyBuildingList{
+  Param(
+    [BuildingType]$Type
+  )
+
+  [ArrayList]$ReturnList = @()
+
+  $BuildingList = [cTyPS]::BuildingDict
+
+  foreach($item in $BuildingList.Keys){
+    if($Type -and $BuildingList[$item].Type -eq $Type){
+      $null = $ReturnList.Add([building]::new($item))
+    }elseif(! $Type){
+      $null = $ReturnList.Add([building]::new($item))
+    }
+  }
+
+  $ReturnList | 
+    select -ExcludeProperty Level |
+    select Name,Description,Cost,Type
+    ft -AutoSize
+} function New-cTy{
+    Param(
+        [parameter(Mandatory=$true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $Name,
+        [Difficulty] $Difficulty = 'Medium',
+        [int] $Year = [datetime]::Now.Year
+    )
+
+    if([Region]::CityList.Name -contains $Name){
+        $string = "A cTy already exists with the name $Name. " + `
+        "Use Show-cTy instead."
+        Write-Error $string -EA Stop
+    }
+
+    [region]::CityList += 
+        [City]::new($Difficulty,$Name,$Year)
+
+    Show-Cty $Name
+}
+ Function New-cTyBuilding{
+    [cmdletbinding()]
+    Param (
+        [validateset([cTyCities])]
+        [string]$cTy,
+
+        [ValidateSet([cTyBuildingNames])]
+        [string]$Building
+    )
+
+    $cTyObj = Get-cTyObject $cTy
+    $cTyBuilding = [cTyPS]::BuildingDict.$Building
+
+    if($cTyObj.Cash -ge $cTyBuilding.BaseCost){
+        $cTyObj.NewBuild($Building, 1)
+        $ctyObj.Cash = $cTyObj.Cash - [int]$cTyBuilding.BaseCost
+    }else{
+        Write-Error "Not enough dough in $cTy coffers to build $Building!"
+    }
+
+    return $true
+}
+ Function Next-cTyTurn {
+    Param(
+        [validateset([cTyCities])]
+        [string[]]$Name = [region]::CityList[0].Name,
+
+        [validaterange(1,12)]
+        [int]$Count = 1
+    )
+
+    foreach($cTy in $Name){
+        $cTyObj = Get-cTyObject $cTy
+        for($x=1;$x -le $count;$x++){
+            $null = $cTyObj.NextTurn()
+        }
+    }
+} function Show-Cty{
+    Param(
+        [ValidateSet([cTyCities])]
+        [string]$Name = [region]::CityList[0].Name
+    )
+
+    $cTy = Get-cTyObject $Name
+
+    'cTy DETAILS:'
+    $cTy | select -ExcludeProperty Buildings | ft 
+
+    "BUILDING LIST:"
+    $cTy.Buildings | 
+        select -ExcludeProperty Cost | 
+        select Name,Description,Level,Type
+        ft -AutoSize
 }
 $ExportList = @('Get-cTy',
 'Get-cTyBuildingList',

@@ -20,7 +20,7 @@ Foreach($Target in $Targets){
     $Files += Get-ChildItem @splFiles
 }
 
-$BuildList = @{
+$BuildList = [ordered]@{
     Enums = $Files | where basename -like "*enum*"
     Classes = $Files | where basename -like "*class*"
     Tables = $Files | where basename -like "*table*"
