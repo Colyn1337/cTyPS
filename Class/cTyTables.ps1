@@ -15,6 +15,7 @@
         Type      = [BuildingType]::Civic
         Desc      = 'Provides governance and collects taxes.'
         BaseCost  = 12000
+        MaxJobs   = 50
         DependsOn = @{
             'Government District' = 1
         }
@@ -64,14 +65,14 @@
         Type     = [BuildingType]::Industrial
         Desc     = 'Low value land designated for industry.'
         BaseCost = 7000
-        BaseEmp  = 0
+        MaxJobs  = 0
     }
     'Box Factory' = @{
         Class    = [BuildingClass]::Building
         Type     = [BuildingType]::Industrial
         Desc     = "Box shaped factory producing, well, boxes."
         BaseCost = 2000
-        BaseEmp  = 100
+        MaxJobs  = 100
         DependsOn = @{
             'Industrial District' = 1
         }
@@ -81,6 +82,6 @@
         Type     = [BuildingType]::Commercial
         Desc     = 'A space for businesses and offices.'
         BaseCost = 25000
-        BaseEmp  = 0
+        MaxJobs  = 0
     }
 }

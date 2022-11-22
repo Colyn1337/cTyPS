@@ -1,4 +1,5 @@
 Function Next-cTyTurn {
+    [cmdletbinding()]
     Param(
         [validateset([cTyCities])]
         [string[]]$Name = [region]::CityList[0].Name,
@@ -7,6 +8,7 @@ Function Next-cTyTurn {
         [int]$Count = 1
     )
 
+    $VerbosePreference = "Continue"
     foreach($cTy in $Name){
         $cTyObj = Get-cTyObject $cTy
         for($x=1;$x -le $count;$x++){
