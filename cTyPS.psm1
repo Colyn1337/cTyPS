@@ -285,6 +285,22 @@ function Get-cTy{
     Show-Cty $Name
 }
  Function New-cTyBuilding{
+<#
+  .SYNOPSIS
+    For adding buildings to a cTy.
+  .DESCRIPTION
+    Adds a new building to the cTy if the requirements are met and
+    the cTy has enough dough for construction. The Building param
+    will cycle through all Building options.
+  .EXAMPLE
+    New-cTyBuilding -cTy MycTy -Building 'Founders Statue'
+  .OUTPUTS
+    Boolean
+  .NOTES
+    Author:    Colyn Via
+    Version:   1.0
+    Date:      11.22.2022
+#>
     [cmdletbinding()]
     Param (
         [validateset([cTyCities])]
