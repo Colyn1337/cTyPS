@@ -1,3 +1,11 @@
+<#
+  .SYNOPSIS
+    A universal build script for pwsh and Powershell projects.
+  .DESCRIPTION
+    Compiles individual code files into a module file for
+    distribution. Loads files and orders them based on named
+    purpose (e.g. enum, class, private, public).
+#>
 using namespace System.Collections
 Param(
     [switch]$DevBuild
@@ -6,7 +14,9 @@ $Location = $PSScriptRoot
 if([string]::IsNullOrEmpty($Location)){
   $Location = Get-Location
 }
-$Targets = "Class","Public","Private"
+$ModuleName = (Get-Item $Location).Name
+
+$Targets = "Enum","Class","Public","Private"
 [ArrayList]$Files = $null
 
 Foreach($Target in $Targets){
@@ -63,15 +73,16 @@ If(! $DevBuild){
 $splNewItem = @{
     Path = $Location
     ItemType = 'File'
-    Name = 'cTyPS.psm1'
+    Name = "$ModuleName.psm1"
     Force = $True
     Value = $content
 }
 if($DevBuild){
-    $splNewItem.Name = 'devcTyPS.psm1'
+    $splNewItem.Name = "dev_" + $ModuleName + ".psm1"
 }
 $null = New-Item @splNewItem
 
+$HelpFilePath = "$Location\en-US\about_" + $ModuleName + ".help.txt"
 [string]$HelpContent = Get-Content $Location\en-US\about_cTyPS.help.txt -Raw
 $splNewItem = @{
     Path = $Location

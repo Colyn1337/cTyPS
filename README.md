@@ -47,6 +47,10 @@ HOW TO PLAY
 
     PS> New-cTyBuilding -cTy MycTy -Building 'Town Hall'
 
+CONCEPTS
+
+    
+
 KEYWORDS
 
     Terms or titles on which you might expect your users to search for the information in this topic.
