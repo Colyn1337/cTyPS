@@ -1,10 +1,13 @@
 TOPIC
+
     about_cTyPS
 
 SHORT DESCRIPTION
+
     cTyPS is a prototype text based city builder game written entirely in pwsh (Powershell).
 
 LONG DESCRIPTION
+
     Originating from a natural love of strategy and city builder games I use this project is 
     used to test concepts in pwsh.  Shortcuts such as using C# code to overcome pwsh's 
     limitations are not permitted by design.
@@ -45,7 +48,9 @@ HOW TO PLAY
     PS> New-cTyBuilding -cTy MycTy -Building 'Town Hall'
 
 KEYWORDS
+
     Terms or titles on which you might expect your users to search for the information in this topic.
 
 SEE ALSO
+
     cTyPS github project https://github.com/Colyn1337/cTyPS
