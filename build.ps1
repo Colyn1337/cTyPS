@@ -13,8 +13,8 @@ Foreach($Target in $Targets){
         Path = "$Location\$target"
         File = $true
         Recurse = $true
-        Include = "*.ps1","*.psm1"
-        Exclude = "build.psm1","build.ps1","buildtest.ps1"
+        Include = "*.ps1"
+        Exclude = "build.ps1"
         ErrorAction = 'SilentlyContinue'
     }
     $Files += Get-ChildItem @splFiles
@@ -35,8 +35,20 @@ Foreach($key in $BuildList.Keys){
     }
     $Content += Get-Content @splGetContent
     $Content += [System.Environment]::NewLine
-    
 }
+
+[string]$ExportList = @(
+    foreach($PublicCmdlet in $BuildList.Public.BaseName){
+        [string]$cmdName = $PublicCmdlet
+        "'" + $cmdName + "'"
+    }
+)
+$ExportList = $ExportList -replace " ",",`n"
+
+$ModuleExport = '$ExportList = @(' + $ExportList + ')' +'
+Export-ModuleMember $ExportList'
+
+$Content += $ModuleExport
 
 $splNewItem = @{
     Path = $Location
