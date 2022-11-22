@@ -9,7 +9,10 @@ LONG DESCRIPTION
     to test the limits of pwsh (not Windows Powershell).  Shortcuts such as using C# code
     to overcome pwsh's limitations are not permitted.
 
-EXAMPLES
+HOW TO PLAY
+
+    
+
     > New-cTy -Name 'MyCity'
 
 KEYWORDS
