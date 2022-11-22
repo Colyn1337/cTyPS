@@ -14,7 +14,7 @@ function Get-cTyBuildingList{
       $null = $ReturnList.Add([building]::new($item))
     }
   }
-
+  
   $ReturnList | 
     select -ExcludeProperty Level |
     select Name,Description,Cost,Type

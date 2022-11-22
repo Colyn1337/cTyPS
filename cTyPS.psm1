@@ -1,4 +1,5 @@
-using namespace System.ComponentModel.DataAnnotations;
+using namespace System.Collections
+using namespace System.ComponentModel.DataAnnotations
 
 Enum Difficulty{
     Easy    = 125
@@ -18,23 +19,6 @@ Enum BuildingType{
     Industrial
     Civic
 }
-
-<#Powershell doesn't seem to like/support enum attributes
-Add-Type -TypeDefinition @"
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-public enum BuildingName
-{
-    [Display(Name="Town Hall")]
-    TownHall,
-    [Display(Name="Residential District")]
-    ResidentialDistrict
-}
-"@
-#>
-#using module ./cTyEnums.ps1
-#using module ./cTyTables.ps1 Don't uncomment or it will cause a load loop: 'module nesting limit'
-
 class cTyPS {
     static $BuildingDict
 }
@@ -137,9 +121,6 @@ Class cTyCities : System.Management.Automation.IValidateSetValuesGenerator {
         return [String[]] $cTyNames
     }
 }
-#using module ./cTyEnums.ps1
-#using module ./cTyClasses.ps1
-
 <#
   Buildings are organized by Type, then by class with Districts
   listed first.
@@ -147,36 +128,59 @@ Class cTyCities : System.Management.Automation.IValidateSetValuesGenerator {
 
 [cTyPs]::BuildingDict = @{
     'Government District' = @{
-        Class    = [BuildingClass]::District
-        Type     = [BuildingType]::Civic
-        Desc     = 'Land set aside for government structures and use.'
-        BaseCost = 10000
+        Class     = [BuildingClass]::District
+        Type      = [BuildingType]::Civic
+        Desc      = 'Land set aside for government structures and use.'
+        BaseCost  = 10000
     }
     'Town Hall' = @{
-        Class    = [BuildingClass]::Building
-        Type     = [BuildingType]::Civic
-        Desc     = 'Provides governance and collects taxes.'
-        BaseCost = 12000
+        Class     = [BuildingClass]::Building
+        Type      = [BuildingType]::Civic
+        Desc      = 'Provides governance and collects taxes.'
+        BaseCost  = 12000
+        DependsOn = @{
+            'Government District' = 1
+        }
     }
     'Residential District' = @{
-        Class    = [BuildingClass]::District
-        Type     = [BuildingType]::Residential
-        Desc     = 'Zoned space for apartments, condos, and dwellings.'
-        BaseCost = 15000
-        BasePop  = 3000
+        Class     = [BuildingClass]::District
+        Type      = [BuildingType]::Residential
+        Desc      = 'Zoned space for apartments, condos, and dwellings.'
+        BaseCost  = 15000
+        BasePop   = 3000
     }
-    'Apartment Complex' = @{
-        Class    = [BuildingClass]::Building
-        Type     = [BuildingType]::Residential
-        Desc     = 'A space sprawling with Apartment buildings.'
-        BaseCost = 6000
-        BasePop  = 2500
+    'Housing Subdivision' = @{
+        Class     = [BuildingClass]::Building
+        Type      = [BuildingType]::Residential
+        Desc      = 'A small community of standalone houses.'
+        BaseCost  = 1000
+        BasePop   = 75
+    }
+    'Simple Apartments' = @{
+        Class     = [BuildingClass]::Building
+        Type      = [BuildingType]::Residential
+        Desc      = 'A space sprawling with Apartment buildings.'
+        BaseCost  = 6000
+        BasePop   = 250
+        DependsOn = @{
+            'Residential District' = 2
+        }
+    }
+    'Sprawling Apartment Complex' = @{
+        Class     = [BuildingClass]::Building
+        Type      = [BuildingType]::Residential
+        Desc      = 'Rows of multistory buildings for apartment dwelers.'
+        BaseCost  = 25000
+        BasePop   = 550
+        DependsOn = @{
+            'Residential District' = 4
+        }
     }
     'Founders Statue' = @{
-        Class    = [BuildingClass]::Monument
-        Type     = [BuildingType]::Civic
-        Desc     = 'A monument to commemorate the founding of the city.'
-        BaseCost = 0
+        Class     = [BuildingClass]::Monument
+        Type      = [BuildingType]::Civic
+        Desc      = 'A monument to commemorate the founding of the city.'
+        BaseCost  = 0
     }
     'Industrial District' = @{
         Class    = [BuildingClass]::District
@@ -184,6 +188,16 @@ Class cTyCities : System.Management.Automation.IValidateSetValuesGenerator {
         Desc     = 'Low value land designated for industry.'
         BaseCost = 7000
         BaseEmp  = 0
+    }
+    'Box Factory' = @{
+        Class    = [BuildingClass]::Building
+        Type     = [BuildingType]::Industrial
+        Desc     = "Box shaped factory producing, well, boxes."
+        BaseCost = 2000
+        BaseEmp  = 100
+        DependsOn = @{
+            'Industrial District' = 1
+        }
     }
     'Commercial District' = @{
         Class    = [BuildingClass]::District
@@ -193,7 +207,9 @@ Class cTyCities : System.Management.Automation.IValidateSetValuesGenerator {
         BaseEmp  = 0
     }
 }
-function Get-cTyObject{
+Function Get-cTyBuildingDict {
+    [ctyps]::BuildingDict
+} function Get-cTyObject{
     Param(
         [validateset([cTyCities])]
         [string] $Name
@@ -243,7 +259,7 @@ function Get-cTy{
       $null = $ReturnList.Add([building]::new($item))
     }
   }
-
+  
   $ReturnList | 
     select -ExcludeProperty Level |
     select Name,Description,Cost,Type
@@ -272,7 +288,7 @@ function Get-cTy{
     [cmdletbinding()]
     Param (
         [validateset([cTyCities])]
-        [string]$cTy,
+        [string]$cTy = [region]::CityList[0].Name,
 
         [ValidateSet([cTyBuildingNames])]
         [string]$Building
@@ -280,15 +296,31 @@ function Get-cTy{
 
     $cTyObj = Get-cTyObject $cTy
     $cTyBuilding = [cTyPS]::BuildingDict.$Building
+    $Build = $true
 
-    if($cTyObj.Cash -ge $cTyBuilding.BaseCost){
-        $cTyObj.NewBuild($Building, 1)
-        $ctyObj.Cash = $cTyObj.Cash - [int]$cTyBuilding.BaseCost
-    }else{
-        Write-Error "Not enough dough in $cTy coffers to build $Building!"
+    $Dependency = $cTyBuilding.DependsOn
+    if($Dependency){
+        $existing = $cTyObj.Buildings
+        foreach($key in $Dependency.keys){
+            if($existing.name -eq $key -and 
+               $existing.level -ge $Dependency[$key]){
+            }else{
+                $Build = $false
+                Write-Error "$Building requires $key level $($Dependency[$key])"
+            }
+        }
     }
 
-    return $true
+    if($cTyObj.Cash -lt $cTyBuilding.BaseCost){
+        Write-Error "Not enough dough in $cTy coffers to build $Building!"
+        $Build = $false
+    }
+
+    if($Build){
+        $cTyObj.NewBuild($Building, 1)
+        $ctyObj.Cash = $cTyObj.Cash - [int]$cTyBuilding.BaseCost
+    }
+    return $build
 }
  Function Next-cTyTurn {
     Param(
@@ -328,4 +360,4 @@ $ExportList = @('Get-cTy',
 'New-cTyBuilding',
 'Next-cTyTurn',
 'Show-cTy')
-Export-ModuleMember $ExportList
+    Export-ModuleMember $ExportList
