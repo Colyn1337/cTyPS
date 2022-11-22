@@ -1,5 +1,5 @@
-using module ./cTyEnums.psm1
-#using module ./cTyTables.psm1 Don't uncomment or it will cause a load loop: 'module nesting limit'
+#using module ./cTyEnums.ps1
+#using module ./cTyTables.ps1 Don't uncomment or it will cause a load loop: 'module nesting limit'
 
 class cTyPS {
     static $BuildingDict

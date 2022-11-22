@@ -1,5 +1,5 @@
-using module ./cTyEnums.psm1
-using module ./cTyClasses.psm1
+#using module ./cTyEnums.ps1
+#using module ./cTyClasses.ps1
 
 <#
   Buildings are organized by Type, then by class with Districts
