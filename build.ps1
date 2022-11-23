@@ -22,11 +22,12 @@
     Author:       Colyn Via
     Contact:      colyn.via@protonmail.com
     Date:         11.22.2022
-    Version       1.0.0
+    Version       1.0.12
 
     Contributors:
 #>
 using namespace System.Collections
+[cmdletbinding()]
 Param(
     [switch]$DevBuild
 )
@@ -66,13 +67,17 @@ $BuildList = [ordered]@{
     Public = $Files | where {$_.directory.name -eq 'Public'}
 }
 Foreach($key in $BuildList.Keys){
-    $splGetContent = @{
-        Path = $BuildList.$Key
-        Raw = $true
-        ErrorAction = 'SilentlyContinue'
+    $items = $BuildList.$key
+    foreach($item in $items){
+        $splGetContent = @{
+            Path = $item
+            Raw = $true
+            ErrorAction = 'SilentlyContinue'
+        }
+        $Content += Get-Content @splGetContent
+        $Content += [System.Environment]::NewLine
+        Write-Verbose "$item"
     }
-    $Content += Get-Content @splGetContent
-    $Content += [System.Environment]::NewLine
 }
 
 If(! $DevBuild){

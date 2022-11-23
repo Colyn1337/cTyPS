@@ -1,6 +1,4 @@
 using namespace System.Collections
-using namespace System.ComponentModel.DataAnnotations
-
 Enum Difficulty{
     Easy    = 125
     Medium  = 100
@@ -256,7 +254,8 @@ Class cTyCities : System.Management.Automation.IValidateSetValuesGenerator {
 }
 Function Get-cTyBuildingDict {
     [ctyps]::BuildingDict
-} function Get-cTyObject{
+}
+function Get-cTyObject{
     Param(
         [validateset([cTyCities])]
         [string] $Name
@@ -273,7 +272,8 @@ Function Get-cTyBuildingDict {
     }
 
     $cTy
-} Function Get-EconomicModel{
+}
+Function Get-EconomicModel{
     [Economics]::new()
 }
 function Get-cTy{
@@ -292,7 +292,8 @@ function Get-cTy{
         select -ExcludeProperty Cost | 
         select Name,Description,Level,Type
         ft -AutoSize
-} function Get-cTyBuildingList{
+}
+function Get-cTyBuildingList{
   Param(
     [BuildingType]$Type
   )
@@ -313,7 +314,8 @@ function Get-cTy{
     select -ExcludeProperty Level |
     select Name,Description,Cost,Type
     ft -AutoSize
-} function New-cTy{
+}
+function New-cTy{
 <#
 #>
     Param(
@@ -335,7 +337,8 @@ function Get-cTy{
 
     Show-Cty $Name
 }
- Function New-cTyBuilding{
+
+Function New-cTyBuilding{
 <#
   .SYNOPSIS
     For adding buildings to a cTy.
@@ -390,7 +393,8 @@ function Get-cTy{
     }
     return $build
 }
- Function Next-cTyTurn {
+
+Function Next-cTyTurn {
     [cmdletbinding()]
     Param(
         [validateset([cTyCities])]

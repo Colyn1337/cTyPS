@@ -1,5 +1,3 @@
-using namespace System.ComponentModel.DataAnnotations
-
 Enum Difficulty{
     Easy    = 125
     Medium  = 100
