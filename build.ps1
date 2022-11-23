@@ -19,11 +19,12 @@
 
   .NOTES
 
-    Author:     Colyn Via
-    Contact:    colyn.via@protonmail.com
-    Date:       11.22.2022
-    Version     1.0.0
-    
+    Author:       Colyn Via
+    Contact:      colyn.via@protonmail.com
+    Date:         11.22.2022
+    Version       1.0.0
+
+    Contributors:
 #>
 using namespace System.Collections
 Param(
