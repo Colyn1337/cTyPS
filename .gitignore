@@ -5,3 +5,4 @@ testing.ps1
 .ds_store
 dev_ctyps.psm1
 *.old
+delete-cty.ps1

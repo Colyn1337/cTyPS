@@ -276,6 +276,11 @@ function Get-cTyObject{
 Function Get-EconomicModel{
     [Economics]::new()
 }
+function Delete-cTy{
+<#
+#>
+
+}
 function Get-cTy{
     Param(
         [ValidateSet([cTyCities])]
@@ -292,6 +297,9 @@ function Get-cTy{
         select -ExcludeProperty Cost | 
         select Name,Description,Level,Type
         ft -AutoSize
+
+    $VerbosePreference = 'continue'
+    Write-Verbose 'Next-cTyTurn Get-cTyBuildingList New-cTyBuilding'
 }
 function Get-cTyBuildingList{
   Param(
@@ -335,7 +343,7 @@ function New-cTy{
     [region]::CityList += 
         [City]::new($Difficulty,$Name,$Year)
 
-    Show-Cty $Name
+    Get-Cty $Name
 }
 
 Function New-cTyBuilding{
@@ -412,7 +420,8 @@ Function Next-cTyTurn {
         }
     }
 }
-$ExportList = @('Get-cTy',
+$ExportList = @('Delete-cTy',
+'Get-cTy',
 'Get-cTyBuildingList',
 'New-cTy',
 'New-cTyBuilding',

@@ -14,4 +14,7 @@ function Get-cTy{
         select -ExcludeProperty Cost | 
         select Name,Description,Level,Type
         ft -AutoSize
+
+    $VerbosePreference = 'continue'
+    Write-Verbose 'Next-cTyTurn Get-cTyBuildingList New-cTyBuilding'
 }

@@ -18,5 +18,5 @@ function New-cTy{
     [region]::CityList += 
         [City]::new($Difficulty,$Name,$Year)
 
-    Show-Cty $Name
+    Get-Cty $Name
 }
