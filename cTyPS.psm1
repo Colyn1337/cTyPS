@@ -350,7 +350,7 @@ function Get-cTy{
   .NOTES
     Author:    Colyn Via
     Contact:   colyn.via@protonmail.com
-    Version:   1.0
+    Version:   1.0.0
     Date:      11.22.2022
 #>
     [cmdletbinding()]
@@ -407,27 +407,10 @@ function Get-cTy{
             $null = $cTyObj.NextTurn()
         }
     }
-} function Show-Cty{
-    Param(
-        [ValidateSet([cTyCities])]
-        [string]$Name = [region]::CityList[0].Name
-    )
-
-    $cTy = Get-cTyObject $Name
-
-    'cTy DETAILS:'
-    $cTy | select -ExcludeProperty Buildings | ft 
-
-    "BUILDING LIST:"
-    $cTy.Buildings | 
-        select -ExcludeProperty Cost | 
-        select Name,Description,Level,Type
-        ft -AutoSize
 }
 $ExportList = @('Get-cTy',
 'Get-cTyBuildingList',
 'New-cTy',
 'New-cTyBuilding',
-'Next-cTyTurn',
-'Show-cTy')
+'Next-cTyTurn')
     Export-ModuleMember $ExportList
