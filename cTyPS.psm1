@@ -93,19 +93,23 @@ Class City : cTyPS{
     
         $MaxJobs = [Economics]::CalculateMaxEmployment($this.Name)
         $LaborPool = [Economics]::LaborPool($this.Name)
+        $Modifier = [Economics]::Modifier($this.name)
         $Pops = $this.Population
-        $jobs = $MaxJobs - $LaborPool
+        $Jobs = $MaxJobs - $LaborPool
 
-        if($jobs -ge ($LaborPool / 10)){
+        if($jobs -ge ($LaborPool / 3)){
             Write-Verbose 'Jobs for anyone who wants one, or two, or three!'
-            $Modifier = ([int][Difficulty]::$($this.Difficulty) / 100)
-            $Change = [Math]::floor($Pops + (($jobs / 8) * $Modifier))
+            $Change = [Math]::Ceiling($Pops + (($Jobs / 8) * $Modifier))
 
-            $this.Population = $change
+            $this.Population = $Change
+        }elseif($jobs -gt $LaborPool){
+            Write-Verbose 'Employment is growing'
+            $Change = $Pops + 1
+            $this.population = $Change
         }elseif($jobs -eq $LaborPool){ 
-            Write-Verbose 'Somehow there is no change with jobs this month'
+            Write-Verbose 'Somehow you have achieved that prefect employment balance'
         }else{
-            $this.Population = $Pops - 10
+            $this.Population = $Pops - 1
         }
         
         $this.Cash += [Economics]::CalculateTax('Residential',$this.Population)
@@ -128,6 +132,12 @@ Class Economics : cTyPS{
     Economics(){
     }
 
+    static [int] Modifier( [string]$cTy ){
+        $ctyobj = [region]::CityList | where name -eq $cTy
+        $Modifier = ([int][Difficulty]::$($ctyobj.Difficulty) / 100)
+        return $Modifier
+    }
+
     static [int] CalculateTax( [string]$Class,[int]$Population ){
         return $Population * [Economics]::Taxes.$Class
     }
@@ -145,9 +155,10 @@ Class Economics : cTyPS{
 
     static [int] LaborPool( [string]$cTy ){
         $ctyobj = [region]::CityList | where name -eq $cTy
-        #Typically 1/3 of a population is working age
-        #Will become more complex as the game grows
-        $LaborPool = [Math]::Floor($cty.Population / 3)
+        #Typically 1/3 of a population is working age however this causes
+        #the city to ramp up too quickly/unrealistically. Using 2/3
+        #till more logic comes into play later.
+        $LaborPool = [Math]::Ceiling(($ctyobj.Population / 3 * 2))
         return $LaborPool
     }
 }
@@ -282,6 +293,31 @@ function Delete-cTy{
 
 }
 function Get-cTy{
+<#
+.SYNOPSIS
+    For displaying cTy details.
+
+.DESCRIPTION
+    Acts as the primary UI for the game. Presents information
+    in various groupings to facilitate easy decision making and
+    exploration of the game.
+
+.EXAMPLE
+    Get-cTy
+
+    Returns information on the first/default cTy
+
+.EXAMPLE
+    Get-cTy secondville
+
+    Returns cTy details on the specified cTy.
+
+.NOTES
+    Author:    Colyn Via
+    Contact:   colyn.via@protonmail.com
+    Version:   1.0.0
+    Date:      11.26.2022
+#>
     Param(
         [ValidateSet([cTyCities])]
         [string]$Name = [region]::CityList[0].Name
@@ -289,17 +325,16 @@ function Get-cTy{
 
     $cTy = Get-cTyObject $Name
 
-    'cTy DETAILS:'
     $cTy | select -ExcludeProperty Buildings | ft 
 
     "BUILDING LIST:"
     $cTy.Buildings | 
         select -ExcludeProperty Cost | 
         select Name,Description,Level,Type
-        ft -AutoSize
+        ft -AutoSize 
 
-    $VerbosePreference = 'continue'
-    Write-Verbose 'Next-cTyTurn Get-cTyBuildingList New-cTyBuilding'
+    "`nCOMMANDS:"
+    "Next-cTyTurn Get-cTyBuildingList New-cTyBuilding"
 }
 function Get-cTyBuildingList{
   Param(

@@ -74,19 +74,23 @@ Class City : cTyPS{
     
         $MaxJobs = [Economics]::CalculateMaxEmployment($this.Name)
         $LaborPool = [Economics]::LaborPool($this.Name)
+        $Modifier = [Economics]::Modifier($this.name)
         $Pops = $this.Population
-        $jobs = $MaxJobs - $LaborPool
+        $Jobs = $MaxJobs - $LaborPool
 
-        if($jobs -ge ($LaborPool / 10)){
+        if($jobs -ge ($LaborPool / 3)){
             Write-Verbose 'Jobs for anyone who wants one, or two, or three!'
-            $Modifier = ([int][Difficulty]::$($this.Difficulty) / 100)
-            $Change = [Math]::floor($Pops + (($jobs / 8) * $Modifier))
+            $Change = [Math]::Ceiling($Pops + (($Jobs / 8) * $Modifier))
 
-            $this.Population = $change
+            $this.Population = $Change
+        }elseif($jobs -gt $LaborPool){
+            Write-Verbose 'Employment is growing'
+            $Change = $Pops + 1
+            $this.population = $Change
         }elseif($jobs -eq $LaborPool){ 
-            Write-Verbose 'Somehow there is no change with jobs this month'
+            Write-Verbose 'Somehow you have achieved that prefect employment balance'
         }else{
-            $this.Population = $Pops - 10
+            $this.Population = $Pops - 1
         }
         
         $this.Cash += [Economics]::CalculateTax('Residential',$this.Population)
@@ -109,6 +113,12 @@ Class Economics : cTyPS{
     Economics(){
     }
 
+    static [int] Modifier( [string]$cTy ){
+        $ctyobj = [region]::CityList | where name -eq $cTy
+        $Modifier = ([int][Difficulty]::$($ctyobj.Difficulty) / 100)
+        return $Modifier
+    }
+
     static [int] CalculateTax( [string]$Class,[int]$Population ){
         return $Population * [Economics]::Taxes.$Class
     }
@@ -126,9 +136,10 @@ Class Economics : cTyPS{
 
     static [int] LaborPool( [string]$cTy ){
         $ctyobj = [region]::CityList | where name -eq $cTy
-        #Typically 1/3 of a population is working age
-        #Will become more complex as the game grows
-        $LaborPool = [Math]::Floor($cty.Population / 3)
+        #Typically 1/3 of a population is working age however this causes
+        #the city to ramp up too quickly/unrealistically. Using 2/3
+        #till more logic comes into play later.
+        $LaborPool = [Math]::Ceiling(($ctyobj.Population / 3 * 2))
         return $LaborPool
     }
 }
