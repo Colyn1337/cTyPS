@@ -1,0 +1,22 @@
+TOPIC
+
+    about_cTyPS_Release_Notes
+
+SHORT DESCRIPTION
+
+    This module helpfile contains notes related to releases and dev work.
+
+NOTES
+
+    11.26.22CV - Game is now starting to become more game like. Logic to tie together
+    buildings and population gives a feeling of strategy. Need to tie together 
+    residential buildings as well. At some point will need to tie in other cTy's in
+    the region though some other concept dev work needs to take place first. Like
+    the ability to save/load cTy's. Thinking default save location to be user's pwsh
+    module directory. Should also think about save structure, need to consider pwsh
+    base install conditions, no sql or such like. I'll probably just encrypt JSON
+    in some generic way and leave it at that.
+        Deleting cTy's also presents some interesting conditions. Requires reindex
+    of region array. I could bypass this with some creative thinking to track last
+    used cTy and default to that, but I like the challenge.
+        Hopefully game will actually be fun to play in the future, ha!

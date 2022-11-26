@@ -58,3 +58,5 @@ KEYWORDS
 SEE ALSO
 
     cTyPS github project https://github.com/Colyn1337/cTyPS
+
+    Developer Notes:  Get-Help about_cTyPS_Developer_Notes
