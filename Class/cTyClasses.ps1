@@ -76,18 +76,18 @@ Class City : cTyPS{
         $LaborPool = [Economics]::LaborPool($this.Name)
         $Modifier = [Economics]::Modifier($this.name)
         $Pops = $this.Population
-        $Jobs = $MaxJobs - $LaborPool
+        $OpenJobs = $MaxJobs - $LaborPool
 
-        if($jobs -ge ($LaborPool / 3)){
+        if($OpenJobs -ge ($LaborPool / 3)){
             Write-Verbose 'Jobs for anyone who wants one, or two, or three!'
-            $Change = [Math]::Ceiling($Pops + (($Jobs / 8) * $Modifier))
+            $Change = [Math]::Ceiling($Pops + (($OpenJobs / 8) * $Modifier))
 
             $this.Population = $Change
-        }elseif($jobs -gt $LaborPool){
+        }elseif($OpenJobs -gt $LaborPool){
             Write-Verbose 'Employment is growing'
             $Change = $Pops + 1
             $this.population = $Change
-        }elseif($jobs -eq $LaborPool){ 
+        }elseif($OpenJobs -eq $LaborPool){ 
             Write-Verbose 'Somehow you have achieved that prefect employment balance'
         }else{
             $this.Population = $Pops - 1
