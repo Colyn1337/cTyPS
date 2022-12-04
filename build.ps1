@@ -22,7 +22,7 @@
     Author:       Colyn Via
     Contact:      colyn.via@protonmail.com
     Updated:      12.04.2022
-    Version       1.0.14
+    Version       1.0.23
 
     Contributors:
 #>
@@ -37,7 +37,7 @@ if([string]::IsNullOrEmpty($Location)){
 }
 $ModuleName = (Get-Item $Location).Name
 
-$Targets = "Enum","Class","Public","Private"
+$Targets = "Enum","Class","Classes","Public","Private"
 [ArrayList]$Files = $null
 
 Foreach($Target in $Targets){
@@ -53,11 +53,13 @@ Foreach($Target in $Targets){
 }
 
 [string]$Content = $null
-[string]$DefaultUsings = 
-    "using namespace System.Collections" +
-    [System.Environment]::NewLine
-
-$Content += $DefaultUsings
+[string[]]$DefaultUsings = @(
+    "System.Collections",
+    "System.Management.Automation"
+)
+foreach($item in $DefaultUsings){
+    $content += 'using namespace ' + $item + [System.Environment]::NewLine
+}
 
 $BuildList = [ordered]@{
     Enums = $Files | where basename -like "*enum*"
