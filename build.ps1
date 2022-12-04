@@ -21,8 +21,8 @@
 
     Author:       Colyn Via
     Contact:      colyn.via@protonmail.com
-    Date:         11.22.2022
-    Version       1.0.12
+    Updated:      12.04.2022
+    Version       1.0.14
 
     Contributors:
 #>
@@ -108,12 +108,13 @@ if($DevBuild){
 $null = New-Item @splNewItem
 
 $HelpFilePath = "$Location\en-US\about_" + $ModuleName + ".help.txt"
-[string]$HelpContent = Get-Content $HelpFilePath -Raw
+[string]$HelpContent = Get-Content $HelpFilePath -Raw -EA SilentlyContinue
 $splNewItem = @{
     Path = $Location
     ItemType = 'File'
     Name = 'README.md'
     Force = $True
     Value = $HelpContent
+    EA = 'silentlycontinue'
 }
 $null = New-Item @splNewItem
