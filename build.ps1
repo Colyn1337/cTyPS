@@ -22,7 +22,7 @@
     Author:       Colyn Via
     Contact:      colyn.via@protonmail.com
     Updated:      12.04.2022
-    Version       1.0.28
+    Version:      1.0.28
 
     Contributors:
 #>
