@@ -22,7 +22,7 @@
     Author:       Colyn Via
     Contact:      colyn.via@protonmail.com
     Updated:      12.04.2022
-    Version       1.0.23
+    Version       1.0.28
 
     Contributors:
 #>
@@ -57,8 +57,11 @@ Foreach($Target in $Targets){
     "System.Collections",
     "System.Management.Automation"
 )
-foreach($item in $DefaultUsings){
-    $content += 'using namespace ' + $item + [System.Environment]::NewLine
+if($DefaultUsings){
+    foreach($item in $DefaultUsings){
+        $content += 'using namespace ' + $item + [System.Environment]::NewLine
+    }
+    $Content += [System.Environment]::NewLine
 }
 
 $BuildList = [ordered]@{
@@ -111,6 +114,10 @@ $null = New-Item @splNewItem
 
 $HelpFilePath = "$Location\en-US\about_" + $ModuleName + ".help.txt"
 [string]$HelpContent = Get-Content $HelpFilePath -Raw -EA SilentlyContinue
+if(! $?){
+    Write-Verbose 'No module helpfile found.'
+}
+
 $splNewItem = @{
     Path = $Location
     ItemType = 'File'
@@ -120,3 +127,6 @@ $splNewItem = @{
     EA = 'silentlycontinue'
 }
 $null = New-Item @splNewItem
+if(! $?){
+    Write-Verbose 'Copy of module help to readme.md failed.'
+}

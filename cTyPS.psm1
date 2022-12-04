@@ -1,4 +1,6 @@
 using namespace System.Collections
+using namespace System.Management.Automation
+
 Enum Difficulty{
     Easy    = 125
     Medium  = 100
