@@ -21,10 +21,11 @@
 
     Author:       Colyn Via
     Contact:      colyn.via@protonmail.com
-    Updated:      12.04.2022
-    Version:      1.0.28
+    Updated:      09.25.2023
+    Version:      1.0.29
 
     Contributors:
+                  None
 #>
 using namespace System.Collections
 [cmdletbinding()]
@@ -109,6 +110,13 @@ $splNewItem = @{
 }
 if($DevBuild){
     $splNewItem.Name = "dev_" + $ModuleName + ".psm1"
+    $msg = "Dev build of $ModuleName initated. Creating file: " +
+           $splNewItem.Name
+    
+    $was = $InformationPreference
+    $InformationPreference = 'Continue'
+    Write-Information $msg
+    $InformationPreference = $was
 }
 $null = New-Item @splNewItem
 

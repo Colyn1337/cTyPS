@@ -289,54 +289,49 @@ function Get-cTyObject{
 Function Get-EconomicModel{
     [Economics]::new()
 }
-function Delete-cTy{
-<#
-#>
-
-}
 function Get-cTy{
 <#
 .SYNOPSIS
-    For displaying cTy details.
+  For displaying cTy details.
 
 .DESCRIPTION
-    Acts as the primary UI for the game. Presents information
-    in various groupings to facilitate easy decision making and
-    exploration of the game.
+  Acts as the primary UI for the game. Presents information
+  in various groupings to facilitate easy decision making and
+  exploration of the game.
 
 .EXAMPLE
-    Get-cTy
+  Get-cTy
 
-    Returns information on the first/default cTy
+  Returns information on the first/default cTy
 
 .EXAMPLE
-    Get-cTy secondville
+  Get-cTy secondville
 
-    Returns cTy details on the specified cTy.
+  Returns cTy details on the specified cTy.
 
 .NOTES
-    Author:    Colyn Via
-    Contact:   colyn.via@protonmail.com
-    Version:   1.0.0
-    Date:      11.26.2022
+  Author:  Colyn Via
+  Contact:   colyn.via@protonmail.com
+  Version:   1.0.0
+  Date:    11.26.2022
 #>
-    Param(
-        [ValidateSet([cTyCities])]
-        [string]$Name = [region]::CityList[0].Name
-    )
+  Param(
+    [ValidateSet([cTyCities])]
+    [string]$Name = [region]::CityList[0].Name
+  )
 
-    $cTy = Get-cTyObject $Name
+  $cTy = Get-cTyObject $Name
 
-    $cTy | select -ExcludeProperty Buildings | ft 
+  $cTy | select -ExcludeProperty Buildings | ft 
 
-    "BUILDING LIST:"
-    $cTy.Buildings | 
-        select -ExcludeProperty Cost | 
-        select Name,Description,Level,Type
-        ft -AutoSize 
+  "BUILDING LIST:"
+  $cTy.Buildings | 
+    select -ExcludeProperty Cost | 
+    select Name,Description,Level,Type
+    ft -AutoSize 
 
-    "`nCOMMANDS:"
-    "Next-cTyTurn Get-cTyBuildingList New-cTyBuilding"
+  "`nCOMMANDS:"
+  "Next-cTyTurn Get-cTyBuildingList New-cTyBuilding"
 }
 function Get-cTyBuildingList{
   Param(
@@ -457,8 +452,7 @@ Function Next-cTyTurn {
         }
     }
 }
-$ExportList = @('Delete-cTy',
-'Get-cTy',
+$ExportList = @('Get-cTy',
 'Get-cTyBuildingList',
 'New-cTy',
 'New-cTyBuilding',
