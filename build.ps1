@@ -7,13 +7,17 @@
     distribution. Loads files and orders them based on named
     purpose (e.g. enum, class, private, public).
 
+  .PARAMETER DevBuild
+    Calling with this switch results in a dev file created which
+    exposes private methods for easier testing.
+
   .EXAMPLE
     Build a module project for distribution.
 
     ./build.ps1
 
   .EXAMPLE
-    Build a developer version of the module project for testing
+    Build a developer version of the module project.
 
     ./build.ps1 -DevBuild
 
