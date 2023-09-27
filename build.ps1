@@ -80,9 +80,11 @@ Foreach($key in $BuildList.Keys){
             Raw = $true
             ErrorAction = 'SilentlyContinue'
         }
+        $result = 'Failed!'
         $Content += Get-Content @splGetContent
         $Content += [System.Environment]::NewLine
-        Write-Verbose "$item"
+        if($?){$result = 'Success!'}
+        Write-Verbose "$item... $result"
     }
 }
 
