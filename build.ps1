@@ -21,8 +21,8 @@
 
     Author:       Colyn Via
     Contact:      colyn.via@protonmail.com
-    Updated:      09.25.2023
-    Version:      1.0.29
+    Updated:      09.26.2023
+    Version:      1.0.30
 
     Contributors:
                   None
