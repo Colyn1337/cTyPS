@@ -20,3 +20,7 @@ NOTES
     of region array. I could bypass this with some creative thinking to track last
     used cTy and default to that, but I like the challenge.
         Hopefully game will actually be fun to play in the future, ha!
+    
+    09.26.23CV - I spent the past year working on a Python project which has finally
+    been wrapped up.  I'm excited to retun to Powershell development and my pet
+    project.
