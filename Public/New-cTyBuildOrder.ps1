@@ -1,4 +1,4 @@
-Function New-cTyBuilding{
+Function New-cTyBuildOrder{
 <#
   .SYNOPSIS
     For adding buildings to a cTy.
@@ -22,11 +22,11 @@ Function New-cTyBuilding{
         [string]$cTy = [region]::CityList[0].Name,
 
         [ValidateSet([cTyBuildingNames])]
-        [string]$Building
+        [string]$Construction
     )
 
     $cTyObj = Get-cTyObject $cTy
-    $cTyBuilding = [cTyPS]::BuildingDict.$Building
+    $cTyBuilding = [cTyPS]::BuildingDict.$Construction
     $Build = $true
 
     $Dependency = $cTyBuilding.DependsOn
@@ -37,18 +37,19 @@ Function New-cTyBuilding{
                $existing.level -ge $Dependency[$key]){
             }else{
                 $Build = $false
-                Write-Error "$Building requires $key level $($Dependency[$key])"
+                Write-Error "$Construction requires $key 
+                  level $($Dependency[$key])"
             }
         }
     }
 
     if($cTyObj.Cash -lt $cTyBuilding.BaseCost){
-        Write-Error "Not enough dough in $cTy coffers to build $Building!"
+        Write-Error "Not enough dough in $cTy coffers to build $Construction!"
         $Build = $false
     }
 
     if($Build){
-        $cTyObj.NewBuild($Building, 1)
+        $cTyObj.NewBuild($Construction, 1)
         $ctyObj.Cash = $cTyObj.Cash - [int]$cTyBuilding.BaseCost
     }
     return $build

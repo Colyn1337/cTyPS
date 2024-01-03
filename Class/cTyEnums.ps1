@@ -13,6 +13,14 @@ Enum BuildingClass{
 Enum BuildingType{
     Residential
     Commercial
+    Agricultural
     Industrial
     Civic
+}
+
+Enum Crops{
+    Sorghum
+    Maize
+    Wheat
+    Sugarcane
 }

@@ -60,6 +60,27 @@
         Desc      = 'A monument to commemorate the founding of the city.'
         BaseCost  = 0
     }
+    'Agricultural District' = @{
+        Class    = [BuildingClass]::District
+        Type     = [BuildingType]::Agricultural
+        Desc     = 'Land dedicated for food stuffs production.'
+        BaseCost = 5000
+        MaxJobs  = 0
+    }
+    'Basic Farms' = @{
+        Class    = [BuildingClass]::Building
+        Type     = [BuildingType]::Agricultural
+        Desc     = 'The lowest producing farm type you can build.'
+        BaseCost = 1000
+        MaxJobs  = 100
+        DependsOn = @{
+            'Agricultural District' = 1
+        }
+        Production = @{
+            Options = [Crops]
+            Units   = 1
+        }
+    }
     'Industrial District' = @{
         Class    = [BuildingClass]::District
         Type     = [BuildingType]::Industrial

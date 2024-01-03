@@ -33,11 +33,14 @@ function Get-cTy{
 
   $cTy | select -ExcludeProperty Buildings | ft 
 
-  "BUILDING LIST:"
+  "INFRASTRUCTURE:"
   $cTy.Buildings | 
     select -ExcludeProperty Cost | 
     select Name,Description,Level,Type
-    ft -AutoSize 
+    ft -AutoSize
+
+  "`nPRODUCTION:"
+  'Nothing, maybe we should build something!'
 
   "`nCOMMANDS:"
   "Next-cTyTurn Get-cTyBuildingList New-cTyBuilding"
