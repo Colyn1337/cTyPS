@@ -7,6 +7,14 @@ Class Region : cTyPS {
     static [city[]] $CityList
 }
 
+Class Production : cTyPS {
+    [int]       $Units
+    [string]    $Name = 'None'
+
+    Production(){
+    }
+}
+
 class Building : cTyPS {
     [string]       $Name
     [BuildingType] $Type
@@ -14,23 +22,9 @@ class Building : cTyPS {
     [string]       $Description
     [int]          $Cost
     [int]          $MaxJobs
+    [Production]   $Production = [Production]::new()
 
-    Building([string]$Name){
-        if([cTyPS]::BuildingDict.$Name){
-            $building = [cTyPS]::BuildingDict.$Name
-            $this.Name = $Name
-            $this.Cost = $building.BaseCost
-            $this.Description = $building.Desc
-            $this.Type = $building.Type
-            if($building.MaxJobs){
-              $this.MaxJobs = $building.MaxJobs
-            }
-        }else{
-            throw "Building with the name $name does not exist in dictionary."
-        }
-    }
-
-    Building([string]$Name,[int]$Level){
+    Building([string]$Name,[int]$Level = 1){
         if([cTyPS]::BuildingDict.$Name){
             $building = [cTyPS]::BuildingDict.$Name
             $this.Name  = $Name
@@ -38,8 +32,16 @@ class Building : cTyPS {
             $this.Cost = $building.BaseCost
             $this.Description = $building.Desc
             $this.Type = $building.Type
-            if($building.MaxJobs){
-              $this.MaxJobs = $building.MaxJobs
+            switch ($building) {
+                {$_.MaxJobs -ne $null}{
+                    'maxjobs triggered'
+                    $this.MaxJobs = $building.MaxJobs}
+                {$_.Production -ne $null}{
+                    $this.Production.Units = 
+                      $building.Production.Units
+                    $this.Production.Name =
+                      [crops].GetEnumValues()[0]
+                }
             }
         }else{
             throw "Building with the name $name does not exist in dictionary."
@@ -61,7 +63,7 @@ Class City : cTyPS{
         $this.Population = 
             100 * ([int][Difficulty]::$Difficulty / 100)
         $this.Cash =
-            15000 * ([int][Difficulty]::$Difficulty / 100)
+            25000 * ([int][Difficulty]::$Difficulty / 100)
         $this.NewBuild(
             'Town Hall', 1
         )

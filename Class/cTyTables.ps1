@@ -81,6 +81,20 @@
             Units   = 1
         }
     }
+    'Profit Farms' = @{
+        Class    = [BuildingClass]::Building
+        Type     = [BuildingType]::Agricultural
+        Desc     = 'The lowest producing farm type you can build.'
+        BaseCost = 4000
+        MaxJobs  = 200
+        DependsOn = @{
+            'Agricultural District' = 1
+        }
+        Production = @{
+            Options = [Crops]
+            Units   = 5
+        }
+    }
     'Industrial District' = @{
         Class    = [BuildingClass]::District
         Type     = [BuildingType]::Industrial

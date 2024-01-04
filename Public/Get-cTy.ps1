@@ -35,13 +35,28 @@ function Get-cTy{
 
   "INFRASTRUCTURE:"
   $cTy.Buildings | 
-    select -ExcludeProperty Cost | 
+    select -ExcludeProperty Cost |
     select Name,Description,Level,Type
     ft -AutoSize
 
   "`nPRODUCTION:"
-  'Nothing, maybe we should build something!'
-
-  "`nCOMMANDS:"
-  "Next-cTyTurn Get-cTyBuildingList New-cTyBuilding"
+  $prod = $cTy.Buildings | where {$_.Production.Name -ne 'None'}
+  if($prod){
+    $pList = @()
+    foreach($item in $prod.Production){
+      for($x=1; $x -le $item.Units; $x++){
+        $pList += $item.Name
+      }
+    }
+    $pList | 
+      Group-Object |
+      Select Name,Count |
+      ft -AutoSize
+  }else{
+    "`nNothing, maybe we should build something!`n"
+  }
+  
+  'COMMANDS:'
+  'Next-cTyTurn Get-cTyBuildOrderList New-cTyBuildOrder'
+  ''
 }

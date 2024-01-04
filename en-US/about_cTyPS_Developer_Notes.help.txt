@@ -24,3 +24,17 @@ NOTES
     09.26.23CV - I spent the past year working on a Python project which has finally
     been wrapped up.  I'm excited to retun to Powershell development and my pet
     project.
+
+    01.04.24CV - I've been banging my head against a seemingly small behavior in how 
+    Powershell's Format-Table cmdlet works. I'm trying to add a 'production' section 
+    to the cTy output as part of an industry expansion I'm adding. The goal is a 
+    table that lists the kind and amount being produced. Powershell's group object
+    function does alot of the hardwork for this and to get a pretty table I pipe it
+    to be formatted. 
+        Powershell then adds an extra blank new line before and after the
+    data ouput. All attempts to counter this behavior have been unsuccessful and led
+    me to an issue report (https://github.com/PowerShell/PowerShell/issues/15779) where
+    the lead engineer for powershell development posted a reply indicating removing the
+    extra new lines is not an easy ask due to how the formatting works.
+        That means I'll need to develop my own method for displaying this data on the
+    cTy details screen.

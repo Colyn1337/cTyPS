@@ -1,4 +1,4 @@
-function Get-cTyBuildingList{
+function Get-cTyBuildOrderList{
   Param(
     [BuildingType]$Type
   )

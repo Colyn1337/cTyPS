@@ -37,8 +37,8 @@ Function New-cTyBuildOrder{
                $existing.level -ge $Dependency[$key]){
             }else{
                 $Build = $false
-                Write-Error "$Construction requires $key 
-                  level $($Dependency[$key])"
+                Write-Error "$Construction requires $key" +
+                  " level $($Dependency[$key])"
             }
         }
     }
