@@ -19,10 +19,12 @@ function Get-cTy{
   Returns cTy details on the specified cTy.
 
 .NOTES
-  Author:  Colyn Via
+  Author:    Colyn Via
   Contact:   colyn.via@protonmail.com
-  Version:   1.0.0
-  Date:    11.26.2022
+  Version:   1.3.0
+  Initial:   11.26.2022
+  Updated:   01.04.2024
+  
 #>
   Param(
     [ValidateSet([cTyCities])]

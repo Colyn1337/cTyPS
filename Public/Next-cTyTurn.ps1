@@ -1,4 +1,6 @@
 Function Next-cTyTurn {
+<#
+#>
     [cmdletbinding()]
     Param(
         [validateset([cTyCities])]
@@ -8,6 +10,7 @@ Function Next-cTyTurn {
         [int]$Count = 1
     )
 
+    $oldPref = $VerbosePreference
     $VerbosePreference = "Continue"
     foreach($cTy in $Name){
         $cTyObj = Get-cTyObject $cTy
@@ -15,4 +18,5 @@ Function Next-cTyTurn {
             $null = $cTyObj.NextTurn()
         }
     }
+    $VerbosePreference = $oldPref
 }

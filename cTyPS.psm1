@@ -355,10 +355,12 @@ function Get-cTy{
   Returns cTy details on the specified cTy.
 
 .NOTES
-  Author:  Colyn Via
+  Author:    Colyn Via
   Contact:   colyn.via@protonmail.com
-  Version:   1.0.0
-  Date:    11.26.2022
+  Version:   1.3.0
+  Initial:   11.26.2022
+  Updated:   01.04.2024
+  
 #>
   Param(
     [ValidateSet([cTyCities])]
@@ -499,6 +501,8 @@ Function New-cTyBuildOrder{
 }
 
 Function Next-cTyTurn {
+<#
+#>
     [cmdletbinding()]
     Param(
         [validateset([cTyCities])]
@@ -508,6 +512,7 @@ Function Next-cTyTurn {
         [int]$Count = 1
     )
 
+    $oldPref = $VerbosePreference
     $VerbosePreference = "Continue"
     foreach($cTy in $Name){
         $cTyObj = Get-cTyObject $cTy
@@ -515,10 +520,20 @@ Function Next-cTyTurn {
             $null = $cTyObj.NextTurn()
         }
     }
+    $VerbosePreference = $oldPref
+}
+function Set-cTyProductionOutput {
+<#
+#>
+Param(
+
+)
+
 }
 $ExportList = @('Get-cTy',
 'Get-cTyBuildOrderList',
 'New-cTy',
 'New-cTyBuildOrder',
-'Next-cTyTurn')
+'Next-cTyTurn',
+'Set-cTyProductionOutput')
     Export-ModuleMember $ExportList
