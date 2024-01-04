@@ -16,8 +16,16 @@ Enum BuildingClass{
 Enum BuildingType{
     Residential
     Commercial
+    Agricultural
     Industrial
     Civic
+}
+
+Enum Crops{
+    Sorghum
+    Maize
+    Wheat
+    Sugarcane
 }
 class cTyPS {
     static $BuildingDict
@@ -28,6 +36,14 @@ Class Region : cTyPS {
     static [city[]] $CityList
 }
 
+Class Production : cTyPS {
+    [int]       $Units
+    [string]    $Name = 'None'
+
+    Production(){
+    }
+}
+
 class Building : cTyPS {
     [string]       $Name
     [BuildingType] $Type
@@ -35,23 +51,9 @@ class Building : cTyPS {
     [string]       $Description
     [int]          $Cost
     [int]          $MaxJobs
+    [Production]   $Production = [Production]::new()
 
-    Building([string]$Name){
-        if([cTyPS]::BuildingDict.$Name){
-            $building = [cTyPS]::BuildingDict.$Name
-            $this.Name = $Name
-            $this.Cost = $building.BaseCost
-            $this.Description = $building.Desc
-            $this.Type = $building.Type
-            if($building.MaxJobs){
-              $this.MaxJobs = $building.MaxJobs
-            }
-        }else{
-            throw "Building with the name $name does not exist in dictionary."
-        }
-    }
-
-    Building([string]$Name,[int]$Level){
+    Building([string]$Name,[int]$Level = 1){
         if([cTyPS]::BuildingDict.$Name){
             $building = [cTyPS]::BuildingDict.$Name
             $this.Name  = $Name
@@ -59,8 +61,16 @@ class Building : cTyPS {
             $this.Cost = $building.BaseCost
             $this.Description = $building.Desc
             $this.Type = $building.Type
-            if($building.MaxJobs){
-              $this.MaxJobs = $building.MaxJobs
+            switch ($building) {
+                {$_.MaxJobs -ne $null}{
+                    'maxjobs triggered'
+                    $this.MaxJobs = $building.MaxJobs}
+                {$_.Production -ne $null}{
+                    $this.Production.Units = 
+                      $building.Production.Units
+                    $this.Production.Name =
+                      [crops].GetEnumValues()[0]
+                }
             }
         }else{
             throw "Building with the name $name does not exist in dictionary."
@@ -82,7 +92,7 @@ Class City : cTyPS{
         $this.Population = 
             100 * ([int][Difficulty]::$Difficulty / 100)
         $this.Cash =
-            15000 * ([int][Difficulty]::$Difficulty / 100)
+            25000 * ([int][Difficulty]::$Difficulty / 100)
         $this.NewBuild(
             'Town Hall', 1
         )
@@ -240,6 +250,41 @@ Class cTyCities : System.Management.Automation.IValidateSetValuesGenerator {
         Desc      = 'A monument to commemorate the founding of the city.'
         BaseCost  = 0
     }
+    'Agricultural District' = @{
+        Class    = [BuildingClass]::District
+        Type     = [BuildingType]::Agricultural
+        Desc     = 'Land dedicated for food stuffs production.'
+        BaseCost = 5000
+        MaxJobs  = 0
+    }
+    'Basic Farms' = @{
+        Class    = [BuildingClass]::Building
+        Type     = [BuildingType]::Agricultural
+        Desc     = 'The lowest producing farm type you can build.'
+        BaseCost = 1000
+        MaxJobs  = 100
+        DependsOn = @{
+            'Agricultural District' = 1
+        }
+        Production = @{
+            Options = [Crops]
+            Units   = 1
+        }
+    }
+    'Profit Farms' = @{
+        Class    = [BuildingClass]::Building
+        Type     = [BuildingType]::Agricultural
+        Desc     = 'The lowest producing farm type you can build.'
+        BaseCost = 4000
+        MaxJobs  = 200
+        DependsOn = @{
+            'Agricultural District' = 1
+        }
+        Production = @{
+            Options = [Crops]
+            Units   = 5
+        }
+    }
     'Industrial District' = @{
         Class    = [BuildingClass]::District
         Type     = [BuildingType]::Industrial
@@ -324,16 +369,34 @@ function Get-cTy{
 
   $cTy | select -ExcludeProperty Buildings | ft 
 
-  "BUILDING LIST:"
+  "INFRASTRUCTURE:"
   $cTy.Buildings | 
-    select -ExcludeProperty Cost | 
+    select -ExcludeProperty Cost |
     select Name,Description,Level,Type
-    ft -AutoSize 
+    ft -AutoSize
 
-  "`nCOMMANDS:"
-  "Next-cTyTurn Get-cTyBuildingList New-cTyBuilding"
+  "`nPRODUCTION:"
+  $prod = $cTy.Buildings | where {$_.Production.Name -ne 'None'}
+  if($prod){
+    $pList = @()
+    foreach($item in $prod.Production){
+      for($x=1; $x -le $item.Units; $x++){
+        $pList += $item.Name
+      }
+    }
+    $pList | 
+      Group-Object |
+      Select Name,Count |
+      ft -AutoSize
+  }else{
+    "`nNothing, maybe we should build something!`n"
+  }
+  
+  'COMMANDS:'
+  'Next-cTyTurn Get-cTyBuildOrderList New-cTyBuildOrder'
+  ''
 }
-function Get-cTyBuildingList{
+function Get-cTyBuildOrderList{
   Param(
     [BuildingType]$Type
   )
@@ -378,7 +441,7 @@ function New-cTy{
     Get-Cty $Name
 }
 
-Function New-cTyBuilding{
+Function New-cTyBuildOrder{
 <#
   .SYNOPSIS
     For adding buildings to a cTy.
@@ -402,11 +465,11 @@ Function New-cTyBuilding{
         [string]$cTy = [region]::CityList[0].Name,
 
         [ValidateSet([cTyBuildingNames])]
-        [string]$Building
+        [string]$Construction
     )
 
     $cTyObj = Get-cTyObject $cTy
-    $cTyBuilding = [cTyPS]::BuildingDict.$Building
+    $cTyBuilding = [cTyPS]::BuildingDict.$Construction
     $Build = $true
 
     $Dependency = $cTyBuilding.DependsOn
@@ -417,18 +480,19 @@ Function New-cTyBuilding{
                $existing.level -ge $Dependency[$key]){
             }else{
                 $Build = $false
-                Write-Error "$Building requires $key level $($Dependency[$key])"
+                Write-Error "$Construction requires $key" +
+                  " level $($Dependency[$key])"
             }
         }
     }
 
     if($cTyObj.Cash -lt $cTyBuilding.BaseCost){
-        Write-Error "Not enough dough in $cTy coffers to build $Building!"
+        Write-Error "Not enough dough in $cTy coffers to build $Construction!"
         $Build = $false
     }
 
     if($Build){
-        $cTyObj.NewBuild($Building, 1)
+        $cTyObj.NewBuild($Construction, 1)
         $ctyObj.Cash = $cTyObj.Cash - [int]$cTyBuilding.BaseCost
     }
     return $build
@@ -453,8 +517,8 @@ Function Next-cTyTurn {
     }
 }
 $ExportList = @('Get-cTy',
-'Get-cTyBuildingList',
+'Get-cTyBuildOrderList',
 'New-cTy',
-'New-cTyBuilding',
+'New-cTyBuildOrder',
 'Next-cTyTurn')
     Export-ModuleMember $ExportList
